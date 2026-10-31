@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; manifest-src 'self'; worker-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#e8f0ea">
+<meta name="referrer" content="no-referrer">
+<title>Habit Garden</title>
+<meta name="description" content="A habit tracker where every habit is a plant in a pot. Water it each day and watch it grow. Private, works offline, no account.">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<script src="theme-init.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <div class="brand">
+    <svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 54V30" stroke="currentColor" stroke-width="5" stroke-linecap="round" fill="none"/><path d="M32 34C20 34 12 26 12 14c12 0 20 8 20 20z" fill="currentColor"/><path d="M32 28c0-10 7-18 20-18 0 12-8 18-20 18z" fill="var(--accent)"/><path d="M18 54h28l-3 6H21z" fill="currentColor" opacity=".55"/></svg>
+    <span>Habit Garden</span>
+  </div>
+  <button id="modeBtn" class="btn small ghost" type="button">Auto</button>
+</header>
+
+<main id="main" class="wrap">
+  <div id="saveWarn" class="note bad" hidden>This browser is not letting Habit Garden save, so your garden will be lost when you close the tab. Try a normal (not private) window.</div>
+
+  <section id="view-garden" aria-labelledby="greet">
+    <div class="hero">
+      <p class="date" id="dateLine"></p>
+      <h1 id="greet">Your garden</h1>
+      <div class="progress" id="progress" hidden>
+        <svg class="ring" viewBox="0 0 44 44" aria-hidden="true"><circle class="ring-bg" cx="22" cy="22" r="18"/><circle class="ring-fg" id="ringFg" cx="22" cy="22" r="18"/></svg>
+        <p id="progressText"></p>
+      </div>
+    </div>
+    <div id="garden" class="garden"></div>
+    <div id="empty" class="cardbox empty-box" hidden>
+      <h2>Nothing planted yet</h2>
+      <p class="muted">Pick one thing you want to do most days. Each time you do it, tap Water and your plant grows. Skip a few days and it droops.</p>
+      <div class="row"><button class="btn primary" type="button" data-act="new">Plant a habit</button><button class="btn" type="button" data-act="sample">Try a sample garden</button></div>
+    </div>
+  </section>
+
+  <section id="view-year" hidden aria-labelledby="yearH">
+    <h1 class="page-h" id="yearH">Your year</h1>
+    <div id="yearBody"></div>
+  </section>
+
+  <section id="view-more" hidden aria-labelledby="moreH">
+    <h1 class="page-h" id="moreH">More</h1>
+    <div class="cardbox">
+      <h2>Reminder</h2>
+      <p class="muted small">A nudge when something in your garden still needs water. It only appears while Habit Garden is open in a browser tab or added to your home screen, because it has no server to message you from.</p>
+      <div class="row"><label class="switch"><input type="checkbox" id="remOn"><span>Remind me at</span></label><label class="sr" for="remTime">Reminder time</label><input type="time" id="remTime" class="time"></div>
+      <p class="fb" id="remMsg" role="status"></p>
+    </div>
+    <div class="cardbox">
+      <h2>Share your garden</h2>
+      <p class="muted small">Makes a picture of your garden to post or send. It is made on your phone and goes nowhere until you share it.</p>
+      <div class="row"><button class="btn primary" type="button" id="shareImg">Download garden picture</button></div>
+    </div>
+    <div class="cardbox">
+      <h2>Backup</h2>
+      <p class="muted small">Your garden is saved only in this browser. Download a copy now and then, or to move to another phone.</p>
+      <div class="row"><button class="btn" type="button" id="backup">Download backup</button><label class="btn" for="restoreFile">Restore from file</label><input type="file" id="restoreFile" class="sr" accept="application/json,.json"></div>
+      <p class="fb" id="backupMsg" role="status"></p>
+    </div>
+    <div class="cardbox">
+      <h2>Start over</h2>
+      <p class="muted small">Removes every habit and all history from this browser.</p>
+      <div class="row"><button class="btn danger" type="button" id="wipe">Clear everything</button></div>
+    </div>
+    <p class="foot muted small">Habit Garden · MIT licence · <a href="https://github.com/jay-m007/Habit-Garden">source</a></p>
+  </section>
+</main>
+
+<button id="fab" class="fab" type="button" data-act="new" aria-label="Plant a new habit">+ Plant</button>
+<nav class="dock" aria-label="Sections">
+  <button type="button" data-view="garden" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21v-9M12 14C7 14 4 11 4 6c5 0 8 3 8 8zM12 11c0-4 3-7 8-7 0 5-3 7-8 7z"/></svg><span>Garden</span></button>
+  <button type="button" data-view="year"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg><span>Year</span></button>
+  <button type="button" data-view="more"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span>More</span></button>
+</nav>
+
+<dialog id="habitDlg" aria-labelledby="habitDlgH">
+  <form id="habitForm" novalidate>
+    <header class="dhead"><h2 id="habitDlgH">New habit</h2><button class="icon-btn" type="button" data-close aria-label="Close">×</button></header>
+    <div class="dbody">
+      <div class="field"><label for="h-name">What will you do?</label><input id="h-name" maxlength="40" placeholder="Read 20 pages" autocomplete="off" required></div>
+      <div class="field"><span class="lbl" id="h-kindLbl">How often</span>
+        <div class="seg" role="radiogroup" aria-labelledby="h-kindLbl" id="h-kind">
+          <button type="button" role="radio" data-kind="daily" aria-checked="true">Every day</button>
+          <button type="button" role="radio" data-kind="weekly" aria-checked="false">A few days a week</button>
+        </div></div>
+      <div class="field" id="h-weekBox" hidden><label for="h-target">Days per week</label><select id="h-target"></select></div>
+      <div class="field"><span class="lbl" id="h-plantLbl">Plant</span><div class="plants" role="radiogroup" aria-labelledby="h-plantLbl" id="h-plants"></div></div>
+      <div class="field"><span class="lbl" id="h-potLbl">Pot</span><div class="pots" role="radiogroup" aria-labelledby="h-potLbl" id="h-pots"></div></div>
+      <p class="fb bad" id="h-msg" role="status"></p>
+    </div>
+    <footer class="dfoot"><button class="btn danger" type="button" id="h-del" hidden>Delete</button><span class="grow"></span><button class="btn" type="button" data-close>Cancel</button><button class="btn primary" type="submit" id="h-save">Plant it</button></footer>
+  </form>
+</dialog>
+
+<dialog id="detailDlg" aria-labelledby="detailH">
+  <div class="dhead"><h2 id="detailH">Habit</h2><button class="icon-btn" type="button" data-close aria-label="Close">×</button></div>
+  <div class="dbody" id="detailBody"></div>
+  <footer class="dfoot"><span class="grow"></span><button class="btn" type="button" id="d-edit">Edit</button><button class="btn primary" type="button" data-close>Done</button></footer>
+</dialog>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script type="module" src="app.js"></script>
+</body>
+</html>
